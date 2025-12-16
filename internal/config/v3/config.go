@@ -8,15 +8,14 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	oidc "github.com/zamedic/mongo-aks-callback"
 	"github.com/zamedic/mongodb-query-exporter/internal/collector"
 	"github.com/zamedic/mongodb-query-exporter/internal/config"
 	"github.com/zamedic/mongodb-query-exporter/internal/x/zap"
-	mongo_aks_oidc "guthub.com/zamedic/mongo-aks-oidc"
 
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-// Configuration v3.0 format
 type Config struct {
 	Bind         string
 	MetricsPath  string
@@ -143,7 +142,7 @@ func (conf *Config) Build() (*collector.Collector, error) {
 		l.Sugar().Infof("use mongodb hosts %#v", opts.Hosts)
 
 		if srv.AksOidcScope != "" {
-			callback, err := mongo_aks_oidc.NewAksCallback(mongo_aks_oidc.WithScope(srv.AksOidcScope)).GetAksCallback()
+			callback, err := oidc.NewAksCallback(oidc.WithScope(srv.AksOidcScope)).GetAksCallback()
 			if err != nil {
 				return nil, err
 			}
