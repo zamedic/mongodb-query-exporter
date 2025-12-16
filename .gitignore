@@ -4,3 +4,6 @@ goreportcard.db
 ./config.yaml
 coverage.out
 **/charts
+.idea
+go.work
+go.work.sum

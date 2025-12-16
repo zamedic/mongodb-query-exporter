@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/raffis/mongodb-query-exporter/v5/internal/x/zap"
 	"github.com/tj/assert"
+	"github.com/zamedic/mongodb-query-exporter/internal/x/zap"
 )
 
 func TestBuild(t *testing.T) {

@@ -8,11 +8,9 @@ import (
 	"os/user"
 	"time"
 
-	"github.com/raffis/mongodb-query-exporter/v5/internal/collector"
-	"github.com/raffis/mongodb-query-exporter/v5/internal/config"
-	v1 "github.com/raffis/mongodb-query-exporter/v5/internal/config/v1"
-	v2 "github.com/raffis/mongodb-query-exporter/v5/internal/config/v2"
-	v3 "github.com/raffis/mongodb-query-exporter/v5/internal/config/v3"
+	"github.com/zamedic/mongodb-query-exporter/internal/collector"
+	"github.com/zamedic/mongodb-query-exporter/internal/config"
+	v3 "github.com/zamedic/mongodb-query-exporter/internal/config/v3"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -79,25 +77,8 @@ func main() {
 }
 
 func buildCollector() (*collector.Collector, config.Config, error) {
-	var configVersion float32
-	err := viper.UnmarshalKey("version", &configVersion)
-	if err != nil {
-		panic(err)
-	}
-
-	var conf config.Config
-	switch configVersion {
-	case 3.0:
-		conf = &v3.Config{}
-
-	case 2.0:
-		conf = &v2.Config{}
-
-	default:
-		conf = &v1.Config{}
-	}
-
-	err = viper.Unmarshal(&conf)
+	conf := &v3.Config{}
+	err := viper.Unmarshal(&conf)
 	if err != nil {
 		panic(err)
 	}

@@ -8,11 +8,12 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/raffis/mongodb-query-exporter/v5/internal/collector"
-	"github.com/raffis/mongodb-query-exporter/v5/internal/config"
-	"github.com/raffis/mongodb-query-exporter/v5/internal/x/zap"
+	"github.com/zamedic/mongodb-query-exporter/internal/collector"
+	"github.com/zamedic/mongodb-query-exporter/internal/config"
+	"github.com/zamedic/mongodb-query-exporter/internal/x/zap"
+	mongo_aks_oidc "guthub.com/zamedic/mongo-aks-oidc"
 
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 // Configuration v3.0 format
@@ -60,8 +61,9 @@ type Metric struct {
 
 // MongoDB client options
 type Server struct {
-	Name string
-	URI  string
+	Name         string
+	URI          string
+	AksOidcScope string
 }
 
 // Get address where the http server should be bound to
@@ -139,6 +141,14 @@ func (conf *Config) Build() (*collector.Collector, error) {
 		srv.URI = os.ExpandEnv(srv.URI)
 		opts := options.Client().ApplyURI(srv.URI)
 		l.Sugar().Infof("use mongodb hosts %#v", opts.Hosts)
+
+		if srv.AksOidcScope != "" {
+			callback, err := mongo_aks_oidc.NewAksCallback(mongo_aks_oidc.WithScope(srv.AksOidcScope)).GetAksCallback()
+			if err != nil {
+				return nil, err
+			}
+			opts.Auth.OIDCMachineCallback = callback
+		}
 
 		var err error
 		name := srv.Name

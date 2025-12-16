@@ -3,10 +3,10 @@ package collector
 import (
 	"context"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
 // Represents a cursor to fetch records from
@@ -44,8 +44,8 @@ type MongoDBDriver struct {
 }
 
 // Connect to the server
-func (mdb *MongoDBDriver) Connect(ctx context.Context, opts ...*options.ClientOptions) error {
-	client, err := mongo.Connect(ctx, opts...)
+func (mdb *MongoDBDriver) Connect(_ context.Context, opts ...*options.ClientOptions) error {
+	client, err := mongo.Connect(opts...)
 	if err != nil {
 		return err
 	}
